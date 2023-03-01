@@ -16,11 +16,18 @@ az monitor app-insights component create --app "arkansas-${RESOURCE_SUFFIX}-app"
 
 APPLICATION_INSIGHTS_CONNECTION_STRING=$(az monitor app-insights component show --app "arkansas-${RESOURCE_SUFFIX}-app" --resource-group "arkansas-${RESOURCE_SUFFIX}-rg" --query "connectionString" --output "tsv")
 
-pushd src/api
-
 echo "${ARKANSAS_GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_USER}" --password-stdin
 
-docker build -t "ghcr.io/${GITHUB_USER}/${RepositoryName}:${RESOURCE_SUFFIX}" --build-arg AI_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING} .
-docker push "ghcr.io/${GITHUB_USER}/${RepositoryName}:${RESOURCE_SUFFIX}"
+pushd src/api
+
+docker build -t "ghcr.io/${GITHUB_USER}/${RepositoryName}-api:${RESOURCE_SUFFIX}" --build-arg AI_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING} .
+docker push "ghcr.io/${GITHUB_USER}/${RepositoryName}-api:${RESOURCE_SUFFIX}"
+
+popd
+
+pushd src/web
+
+docker build -t "ghcr.io/${GITHUB_USER}/${RepositoryName}-web:${RESOURCE_SUFFIX}" --build-arg AI_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING} .
+docker push "ghcr.io/${GITHUB_USER}/${RepositoryName}-web:${RESOURCE_SUFFIX}"
 
 popd
