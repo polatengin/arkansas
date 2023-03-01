@@ -22,6 +22,9 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
+ARG AI_CONNECTION_STRING=""
+ENV APPLICATION_INSIGHTS_CONNECTION_STRING=$AI_CONNECTION_STRING
+
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/static ./.next/static
 
