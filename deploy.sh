@@ -18,6 +18,6 @@ APPLICATION_INSIGHTS_CONNECTION_STRING=$(az monitor app-insights component show 
 
 pushd src/api
 
-docker build -t "app:${RESOURCE_SUFFIX}" --build-arg AI_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING} .
+echo "${ARKANSAS_GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_USER}" --password-stdin
 
 popd
