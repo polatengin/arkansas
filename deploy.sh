@@ -20,4 +20,7 @@ pushd src/api
 
 echo "${ARKANSAS_GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_USER}" --password-stdin
 
+docker build -t "ghcr.io/${GITHUB_USER}/${RepositoryName}:${RESOURCE_SUFFIX}" --build-arg AI_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING} .
+docker push "ghcr.io/${GITHUB_USER}/${RepositoryName}:${RESOURCE_SUFFIX}"
+
 popd
