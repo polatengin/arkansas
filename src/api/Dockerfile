@@ -11,3 +11,5 @@ ENV APPLICATION_INSIGHTS_CONNECTION_STRING=$AI_CONNECTION_STRING
 WORKDIR /app
 COPY --from=build /app/build .
 ENTRYPOINT [ "dotnet", "api.dll" ]
+
+LABEL org.opencontainers.image.source https://github.com/polatengin/arkansas
