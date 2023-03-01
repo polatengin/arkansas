@@ -6,10 +6,6 @@ SUBSCRIPTION_ID=$(az account show --query "id" --output "tsv")
 
 az group create --name "arkansas-${RESOURCE_SUFFIX}-rg" --location "${LOCATION}"
 
-az appservice plan create --resource-group "arkansas-${RESOURCE_SUFFIX}-rg" --name "arkansas-${RESOURCE_SUFFIX}-plan" --location "${LOCATION}" --sku B1 --is-linux --output "none"
-
-az webapp create --resource-group "arkansas-${RESOURCE_SUFFIX}-rg" --plan "arkansas-${RESOURCE_SUFFIX}-plan" --name "arkansas-${RESOURCE_SUFFIX}-app" --runtime "DOTNETCORE:7.0" --output "none"
-
 az monitor log-analytics workspace create --resource-group "arkansas-${RESOURCE_SUFFIX}-rg" --location "${LOCATION}" --sku "PerGB2018" --workspace-name "arkansas-${RESOURCE_SUFFIX}-workspace" --output "none"
 
 az monitor app-insights component create --app "arkansas-${RESOURCE_SUFFIX}-app" --location "${LOCATION}" --kind "web" --resource-group "arkansas-${RESOURCE_SUFFIX}-rg" --workspace "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/arkansas-${RESOURCE_SUFFIX}-rg/providers/microsoft.operationalinsights/workspaces/arkansas-${RESOURCE_SUFFIX}-workspace" --output "none"
@@ -31,3 +27,9 @@ docker build -t "ghcr.io/${GITHUB_USER}/${RepositoryName}-web:${RESOURCE_SUFFIX}
 docker push "ghcr.io/${GITHUB_USER}/${RepositoryName}-web:${RESOURCE_SUFFIX}"
 
 popd
+
+az appservice plan create --resource-group "arkansas-${RESOURCE_SUFFIX}-rg" --name "arkansas-${RESOURCE_SUFFIX}-plan" --location "${LOCATION}" --sku B1 --is-linux --output "none"
+
+az webapp create --resource-group "arkansas-${RESOURCE_SUFFIX}-rg" --plan "arkansas-${RESOURCE_SUFFIX}-plan" --name "arkansas-${RESOURCE_SUFFIX}-api" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${RepositoryName}-api:${RESOURCE_SUFFIX}" --docker-registry-server-user "${GITHUB_USER}" --docker-registry-server-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
+
+docker logout
