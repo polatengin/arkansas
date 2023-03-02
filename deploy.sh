@@ -19,7 +19,7 @@ az appservice plan create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-r
 
 pushd src/api
 
-docker build -t "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-api:${RESOURCE_SUFFIX}" .
+docker build -t "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-api:${RESOURCE_SUFFIX}" --build-arg APPLICATION_INSIGHTS_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING} .
 docker push "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-api:${RESOURCE_SUFFIX}"
 
 az webapp create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --plan "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-api" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-api:${RESOURCE_SUFFIX}" --docker-registry-server-user "${GITHUB_USER}" --docker-registry-server-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
@@ -30,7 +30,7 @@ popd
 
 pushd src/web
 
-docker build -t "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}" .
+docker build -t "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}" --build-arg APPLICATION_INSIGHTS_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING} .
 docker push "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}"
 
 az webapp create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --plan "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-web" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}" --docker-registry-server-user "${GITHUB_USER}" --docker-registry-server-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
