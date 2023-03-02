@@ -15,7 +15,7 @@ APPLICATION_INSIGHTS_CONNECTION_STRING=$(az monitor app-insights component show 
 
 echo "${ARKANSAS_GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_USER}" --password-stdin
 
-az appservice plan create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --location "${LOCATION}" --sku B1 --is-linux --output "none"
+az appservice plan create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --location "${LOCATION}" --sku B3 --is-linux --output "none"
 
 pushd src/api
 
@@ -30,8 +30,15 @@ popd
 
 pushd src/web
 
+cp package.json package.json.bak
+
+jq '.config.applicationInsights_connectionString = "'$APPLICATION_INSIGHTS_CONNECTION_STRING'"' package.json > tmp.json && mv tmp.json package.json
+
 docker build -t "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}" --build-arg APPLICATION_INSIGHTS_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING} .
 docker push "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}"
+
+mv package.json.bak package.json
+rm -rf package.json.bak
 
 az webapp create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --plan "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-web" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}" --docker-registry-server-user "${GITHUB_USER}" --docker-registry-server-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
 
