@@ -9,7 +9,7 @@ az group create --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --location "${LOC
 
 az monitor log-analytics workspace create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --location "${LOCATION}" --sku "PerGB2018" --workspace-name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-workspace" --output "none"
 
-az monitor app-insights component create --app "${PROJECT_NAME}-${RESOURCE_SUFFIX}-app" --location "${LOCATION}" --kind "web" --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --workspace "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg/providers/microsoft.operationalinsights/workspaces/${PROJECT_NAME}-${RESOURCE_SUFFIX}-workspace" --output "none"
+az monitor app-insights component create --app "${PROJECT_NAME}-${RESOURCE_SUFFIX}-app" --location "${LOCATION}" --ingestion-access "Enabled" --application-type "web" --kind "web" --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --workspace "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg/providers/microsoft.operationalinsights/workspaces/${PROJECT_NAME}-${RESOURCE_SUFFIX}-workspace" --output "none"
 
 APPLICATION_INSIGHTS_CONNECTION_STRING=$(az monitor app-insights component show --app "${PROJECT_NAME}-${RESOURCE_SUFFIX}-app" --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --query "connectionString" --output "tsv")
 
