@@ -1,4 +1,4 @@
-# Arizona
+# Arkansas
 
 You can find deploy script in `deploy.sh` file.
 
