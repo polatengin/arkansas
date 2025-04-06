@@ -24,7 +24,7 @@ pushd src/api
 
 az acr build --registry "${PROJECT_NAME}${RESOURCE_SUFFIX}acr" --image "${PROJECT_NAME}-api:${DOCKER_IMAGE_TAG}" --file Dockerfile . --output "none"
 
-az webapp create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --plan "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-api" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-api:${RESOURCE_SUFFIX}" --docker-registry-server-user "${GITHUB_USER}" --docker-registry-server-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
+az webapp create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --plan "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-api" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-api:${RESOURCE_SUFFIX}" --container-registry-user "${GITHUB_USER}" --container-registry-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
 
 az webapp config appsettings set --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-api" --settings APPLICATION_INSIGHTS_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING}
 
@@ -41,7 +41,7 @@ az acr build --registry "${PROJECT_NAME}${RESOURCE_SUFFIX}acr" --image "${PROJEC
 mv package.json.bak package.json
 rm -rf package.json.bak
 
-az webapp create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --plan "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-web" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}" --docker-registry-server-user "${GITHUB_USER}" --docker-registry-server-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
+az webapp create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --plan "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-web" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}" --container-registry-user "${GITHUB_USER}" --container-registry-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
 
 az webapp config appsettings set --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-web" --settings APPLICATION_INSIGHTS_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING}
 
