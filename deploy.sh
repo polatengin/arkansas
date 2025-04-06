@@ -1,9 +1,10 @@
 az extension add -n application-insights
 
-PROJECT_NAME="${RepositoryName}"
-RESOURCE_SUFFIX=$(openssl rand -base64 20 | tr -dc 'a-z0-9' | head -c 6)
+PROJECT_NAME="$(basename "$PWD")"
+RESOURCE_SUFFIX="$(openssl rand -base64 20 | tr -dc 'a-z0-9' | head -c 6)"
 LOCATION="westus"
-SUBSCRIPTION_ID=$(az account show --query "id" --output "tsv")
+SUBSCRIPTION_ID="$(az account show --query "id" --output "tsv")"
+DOCKER_IMAGE_TAG="v$(date +%Y%m%d%H%M%S)"
 
 az group create --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --location "${LOCATION}"
 
