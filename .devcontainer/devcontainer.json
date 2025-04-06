@@ -23,9 +23,9 @@
       "extensions": [
         "EditorConfig.EditorConfig",
         "GitHub.copilot",
-        "GitHub.copilot-labs",
+        "GitHub.copilot-chat",
         "ms-azuretools.vscode-docker",
-        "ms-dotnettools.csharp"
+        "ms-dotnettools.csdevkit"
       ]
     }
   },
