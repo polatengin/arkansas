@@ -7,37 +7,16 @@
       "version": "latest"
     },
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": true,
-      "installOhMyZsh": true,
-      "upgradePackages": true,
-      "username": "devcontainer",
-      "userUid": "automatic",
-      "userGid": "automatic"
+      "upgradePackages": true
     },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/devcontainers/features/dotnet:1": {
-      "version": "latest"
-    },
-    "ghcr.io/devcontainers/features/github-cli:1": {
-      "installDirectlyFromGitHubRelease": true,
-      "version": "latest"
-    },
-    "ghcr.io/devcontainers/features/node:1": {
-      "nodeGypDependencies": true,
-      "version": "lts"
-    },
-    "ghcr.io/devcontainers/features/powershell:1": {
-      "version": "latest"
-    },
+    "ghcr.io/devcontainers/features/dotnet:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/powershell:1": {},
     "ghcr.io/devcontainers-contrib/features/curl-apt-get:1": {},
-    "ghcr.io/devcontainers-contrib/features/typescript:2": {
-      "version": "latest"
-    },
-    "ghcr.io/eitsupi/devcontainer-features/jq-likes:1": {
-      "jqVersion": "os-provided",
-      "yqVersion": "latest",
-      "gojqVersion": "latest"
-    }
+    "ghcr.io/devcontainers-contrib/features/typescript:2": {},
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {}
   },
   "customizations": {
     "vscode": {
