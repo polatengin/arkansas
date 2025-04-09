@@ -12,6 +12,8 @@ az monitor log-analytics workspace create --resource-group "${PROJECT_NAME}-${RE
 
 az monitor app-insights component create --app "${PROJECT_NAME}-${RESOURCE_SUFFIX}-app" --location "${LOCATION}" --ingestion-access "Enabled" --application-type "web" --kind "web" --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --workspace "/subscriptions/${SUBSCRIPTION_ID}/resourcegroups/${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg/providers/microsoft.operationalinsights/workspaces/${PROJECT_NAME}-${RESOURCE_SUFFIX}-workspace" --output "none"
 
+APPLICATION_INSIGHTS_ID=$(az monitor app-insights component show --app "${PROJECT_NAME}-${RESOURCE_SUFFIX}-app" --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --query "id" --output "tsv")
+
 APPLICATION_INSIGHTS_CONNECTION_STRING=$(az monitor app-insights component show --app "${PROJECT_NAME}-${RESOURCE_SUFFIX}-app" --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --query "connectionString" --output "tsv")
 
 az acr create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --name "${PROJECT_NAME}${RESOURCE_SUFFIX}acr" --sku Basic --location "${LOCATION}" --output "none"
@@ -44,5 +46,21 @@ rm -rf package.json.bak
 az webapp create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --plan "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-web" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}" --container-registry-user "${GITHUB_USER}" --container-registry-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
 
 az webapp config appsettings set --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-web" --settings APPLICATION_INSIGHTS_CONNECTION_STRING=${APPLICATION_INSIGHTS_CONNECTION_STRING}
+
+popd
+
+pushd src/admin
+
+az acr build --registry "${PROJECT_NAME}${RESOURCE_SUFFIX}acr" --image "${PROJECT_NAME}-web:${DOCKER_IMAGE_TAG}" --file Dockerfile . --output "none"
+
+az webapp create --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --plan "${PROJECT_NAME}-${RESOURCE_SUFFIX}-plan" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-admin" --deployment-container-image-name "ghcr.io/${GITHUB_USER}/${PROJECT_NAME}-web:${RESOURCE_SUFFIX}" --container-registry-user "${GITHUB_USER}" --container-registry-password "${ARKANSAS_GITHUB_TOKEN}" --output "none"
+
+az webapp config appsettings set --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-admin" --settings APPLICATION_INSIGHTS_ID=${APPLICATION_INSIGHTS_ID}
+
+az webapp identity assign --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-admin" --output "none"
+
+PRINCIPAL_ID=$(az webapp identity show --resource-group "${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg" --name "${PROJECT_NAME}-${RESOURCE_SUFFIX}-admin" --query "principalId" --output "tsv")
+
+az role assignment create --assignee "${PRINCIPAL_ID}" --role "Monitoring Reader" --scope "/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${PROJECT_NAME}-${RESOURCE_SUFFIX}-rg/providers/Microsoft.OperationalInsights/workspaces/${PROJECT_NAME}-${RESOURCE_SUFFIX}-workspace" --output "none"
 
 popd
