@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/nightly/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 WORKDIR /src
 
@@ -10,7 +10,7 @@ COPY . .
 
 RUN dotnet build "api.csproj" -c Release -o /app/build
 
-FROM mcr.microsoft.com/dotnet/nightly/aspnet:7.0-alpine3.17 AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS publish
 
 WORKDIR /app
 

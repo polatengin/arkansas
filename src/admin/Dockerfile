@@ -1,6 +1,6 @@
 FROM node:23-bullseye-slim
 
-WORKDIR /frontend
+WORKDIR /admin
 
 COPY package*.json ./
 
